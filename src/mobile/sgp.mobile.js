@@ -65,21 +65,32 @@ var selectors =
   ];
 
 // Retrieve defaults from local storage.
+//on modifie pour conserver plus d'informations
 var defaults = {
-  length: storage.local.getItem('Len') || 10,
+  options: storage.local.getItem(getDomain(true))||storage.local.getItem(getDomain(false))||storage.local.getItem('default')||null,
+  length : this.options.len||10,
+  secret : this.options.secret || '',
+  method : this.options.method || 'md5',
+  removeSubdomains: this.options.disableTLD || true,
+  /* length: storage.local.getItem('Len') || 10,
   secret: storage.local.getItem('Salt') || '',
   method: storage.local.getItem('Method') || 'md5',
-  removeSubdomains: !storage.local.getItem('DisableTLD') || false,
-  advanced: storage.local.getItem('Advanced') || false
+  removeSubdomains: !storage.local.getItem('DisableTLD') || false, */
+  advanced: storage.local.getItem('Advanced') || false 
 };
 
 // Save current options to local storage as defaults.
 var saveCurrentOptionsAsDefaults = function (e) {
   var input = getCurrentFormInput();
-  storage.local.setItem('Len', input.options.length);
+  if (input.domain){
+    storage.local.setItem(input.domain, {'len' : input.options.length, 'secret' : input.options.secret, 'method' : input.options.method, 'disableTLD' :!input.options.removeSubdomains || ''});
+  }else{
+    storage.local.setItem('default', {'len' : input.options.length, 'secret' : input.options.secret, 'method' : input.options.method, 'disableTLD' :!input.options.removeSubdomains || ''});
+  }
+    /* storage.local.setItem('Len', input.options.length);
   storage.local.setItem('Salt', input.options.secret);
   storage.local.setItem('Method', input.options.method);
-  storage.local.setItem('DisableTLD', !input.options.removeSubdomains || '');
+  storage.local.setItem('DisableTLD', !input.options.removeSubdomains || ''); */
   showButtonSuccess(e);
 };
 
