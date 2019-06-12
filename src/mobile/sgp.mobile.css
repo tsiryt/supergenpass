@@ -141,7 +141,7 @@ label {
 
 .Missing label { color: #d66; }
 .Missing input::-webkit-input-placeholder { color: #d66; }
-.Missing input:::-moz-placeholder { color: #d66; }
+.Missing input::-moz-placeholder { color: #d66; }
 .Missing input::-moz-placeholder { color: #d66; }
 .Missing input:-ms-input-placeholder { color: #d66; }
 .Missing input { border-color: #d66; }

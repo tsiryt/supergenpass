@@ -61,11 +61,15 @@ var selectors =
     'Options',
     'SaveDefaults',
     'Update',
-    'Bookmarklet'
+    'Bookmarklet',
+    'Letters',
+    'Caps',
+    'Numbers',
+    'Spec'
   ];
 
 // Retrieve defaults from local storage.
-var localStorage = storage.local.getItem(getDomain(true))||storage.getItem(getDomain(false))||storage.local.getItem('default');
+var localStorage = storage.local.getItem(getDomain(true))||storage.local.getItem(getDomain(false))||storage.local.getItem('default');
 
 var defaults = {
   length: localStorage ?localStorage.len : 10,
