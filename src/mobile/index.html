@@ -61,15 +61,34 @@
 				</fieldset>
 
 				<fieldset id="MethodField" class="Option">
-					<input id="MethodSHA512" name="Method" type="radio" value="sha512">
-					<label for="MethodSHA512" class="Button" title="Use SHA-512 algorithm">SHA</label>
-					<input id="MethodMD5" name="Method" type="radio" value="md5" checked="checked">
-					<label for="MethodMD5" class="Button" title="Use MD5 algorithm">MD5</label>
+					<input id="MethodRIPEMD160" name="Method" type="radio" value="ripemd160">
+					<label for="MethodRIPEMD160" class="Button" title="Use ripemd160 algorithm">RIPEMD160</label>
+					<input id="MethodSHA3" name="Method" type="radio" value="sha3" checked="checked">
+					<label for="MethodSHA3" class="Button" title="Use SHA3 algorithm">SHA3</label>
 				</fieldset>
 
 				<fieldset id="LenField" class="Option">
 					<input id="Len" type="text" pattern="[0-9]*" value="10" maxlength="2">
 					<label id="Down" class="Button" title="Adjust password length">–</label><label id="Up" class="Button" title="Adjust password length">+</label>
+				</fieldset>
+
+				<fieldset id="Charset" class="Option">
+					<li>
+						<input id="Letters" type="checkbox" checked="checked">
+						<label for="Letters">Letters</label>
+					</li>
+					<li>
+						<input id="Caps" type="checkbox" checked="checked">
+						<label for="Caps">Capital Letters</label>
+					</li>
+					<li>
+						<input id="Numbers" type="checkbox" checked="checked">
+						<label for="Numbers">Numbers</label>
+					</li>
+					<li>
+						<input id="Spec" type="checkbox" checked="checked">
+						<label for="Spec">Special Characters</label>
+					</li>
 				</fieldset>
 
 				<fieldset id="DomainField">
