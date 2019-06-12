@@ -65,13 +65,14 @@ var selectors =
   ];
 
 // Retrieve defaults from local storage.
+var localStorage = storage.local.getItem(getDomain(true))||storage.getItem(getDomain(false))||storage.local.getItem('default');
+
 var defaults = {
-  options: storage.local.getItem(getDomain(true))||storage.getItem(getDomain(false))||storage.local.getItem('default')||null,
-  length: this.options.len || 10,
-  secret: this.options.secret || '',
-  method: this.options.method || 'sha3',
-  charset: this.options.charset || [true,true,true,true],
-  removeSubdomains: this.options.disableTLD || false,
+  length: localStorage ?localStorage.len : 10,
+  secret: localStorage ?localStorage.secret : '',
+  method: localStorage ?localStorage.method : 'sha3',
+  charset: localStorage ?localStorage.charset : [true,true,true,true],
+  removeSubdomains: localStorage ?localStorage.disableTLD : false,
   advanced: storage.local.getItem('Advanced') || false
 };
 
