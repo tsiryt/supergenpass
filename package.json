@@ -7,6 +7,9 @@
     "supergenpass-lib": "^3.0.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/register": "^7.4.4",
     "bookmarkleter": "^0.2.2",
     "browserify": "^13.1.0",
     "grunt": "^1.0.1",
@@ -16,7 +19,7 @@
     "grunt-contrib-cssmin": "^1.0.1",
     "grunt-contrib-jshint": "^1.0.0",
     "grunt-contrib-qunit": "^1.2.0",
-    "grunt-contrib-uglify": "^2.0.0",
+    "grunt-contrib-uglify": "^2.3.0",
     "grunt-load-options": "^0.2.1",
     "grunt-manifest": "^0.4.4",
     "grunt-static-inline": "^0.1.9",

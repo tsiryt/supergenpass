@@ -1,9 +1,12 @@
 'use strict';
 
+
+
 /*jshint browser: true, latedef: false*/
 
+var getHostname = require('./lib/hostname');
+var generate =  require('./lib/generate');
 var $ = require('jquery');
-var sgp = require('supergenpass-lib');
 var ripemd160 = require('crypto-js/ripemd160');
 var sha3 = require('crypto-js/sha3');
 var identicon = require('./lib/identicon5');
@@ -69,32 +72,41 @@ var selectors =
   ];
 
 // Retrieve defaults from local storage.
-var localStorage = storage.local.getItem(getDomain(true))||storage.local.getItem(getDomain(false))||storage.local.getItem('default');
 
-var defaults = {
-  length: localStorage ?localStorage.len : 10,
-  secret: localStorage ?localStorage.secret : '',
-  method: localStorage ?localStorage.method : 'sha3',
-  charset: localStorage ?localStorage.charset : [true,true,true,true],
-  removeSubdomains: localStorage ?localStorage.disableTLD : false,
-  advanced: storage.local.getItem('Advanced') || false
+var getDefaults = function(){
+  var localStorage = storage.local.getItem(getDomain(true))||storage.local.getItem(getDomain(false))||storage.local.getItem('default');
+  localStorage? localStorage = localStorage.split(','):null;
+  return defaults ={
+    length: localStorage ?localStorage[0] : 10,
+      secret: localStorage ?localStorage[1] : '',
+      method: localStorage ?localStorage[2] : 'sha3',
+      charset: localStorage ?[localStorage[3],localStorage[4],localStorage[5],localStorage[6]] : [true,true,true,true],
+      removeSubdomains: localStorage ?localStorage[7] : false,
+      advanced: storage.local.getItem('Advanced') || false
+  };
 };
 
 // Save current options to local storage as defaults.
 var saveCurrentOptionsAsDefaults = function (e) {
   var input = getCurrentFormInput();
   if (input.domain){
-    storage.local.setItem(input.domain, {'len': input.options.length,
-                                          'secret': input.options.secret,
-                                          'method': input.options.method,
-                                          'charset': input.options.charset,
-                                          'disableTLD': !input.options.removeSubdomains || ''});
+    storage.local.setItem(input.domain, [input.options.length,
+                                  input.options.secret,
+                                  input.options.method,
+                                  input.options.charset[0]||'',
+                                  input.options.charset[1]||'',
+                                  input.options.charset[2]||'',
+                                  input.options.charset[3]||'',
+                                  !input.options.removeSubdomains || '']);
   }else{
-    storage.local.setItem('default', {'len': input.options.length,
-                                        'secret': input.options.secret,
-                                        'method': input.options.method,
-                                        'charset': input.options.charset,
-                                        'disableTLD': !input.options.removeSubdomains || ''});
+    storage.local.setItem('default', [input.options.length,
+                                  input.options.secret,
+                                  input.options.method,
+                                  input.options.charset[0]||'',
+                                  input.options.charset[1]||'',
+                                  input.options.charset[2]||'',
+                                  input.options.charset[3]||'',
+                                  !input.options.removeSubdomains || '']);
   }
   showButtonSuccess(e);
 };
@@ -108,9 +120,10 @@ var showUpdateNotification = function (data) {
 // Populate domain with referrer, if available and not from the blacklist.
 var populateReferrer = function (referrer) {
   if (referrer) {
-    referrer = sgp.hostname(referrer, {removeSubdomains: false});
+    referrer = getHostname(referrer, {removeSubdomains: false});
     if (noReferral.indexOf(referrer) === -1) {
-      $el.Domain.val(sgp.hostname(referrer, {removeSubdomains: defaults.removeSubdomains}));
+      var defaults = getDefaults();
+      $el.Domain.val(getHostname(referrer, {removeSubdomains: defaults.removeSubdomains}));
     }
   }
 };
@@ -143,7 +156,8 @@ var listenForBookmarklet = function (event) {
     });
 
     // Populate domain field and call back with the browser height.
-    $el.Domain.val(sgp.hostname(messageOrigin, {removeSubdomains: defaults.removeSubdomains})).trigger('change');
+    var defaults = getDefaults();
+    $el.Domain.val(getHostname(messageOrigin, {removeSubdomains: defaults.removeSubdomains})).trigger('change');
     sendDocumentHeight();
 
   }
@@ -180,7 +194,7 @@ var getCurrentFormInput = function () {
       charset: [$el.Letters.is(':checked'),
                 $el.Caps.is(':checked'),
                 $el.Numbers.is(':checked'),
-                $el.Spec.is(':checked'),],
+                $el.Spec.is(':checked')],
       length: getPasswordLength(),
       method: getHashMethod(),
       removeSubdomains: removeSubdomains
@@ -192,7 +206,7 @@ var getCurrentFormInput = function () {
 var getDomain = function (removeSubdomains) {
   var domain = $el.Domain.val().replace(/ /g, '');
   if (domain) {
-    domain = sgp.hostname(domain, {removeSubdomains: removeSubdomains});
+    domain = getHostname(domain, {removeSubdomains: removeSubdomains});
     $el.Domain.val(domain);
   }
   return domain;
@@ -252,7 +266,7 @@ var generatePassword = function () {
   }
 
   if (input.password && input.domain) {
-    sgp.generate(input.password, input.domain, options, populateGeneratedPassword);
+    generate(input.password, input.domain, options, populateGeneratedPassword);
   }
 
 };
@@ -333,11 +347,20 @@ $.each(selectors, function (i, val) {
 });
 
 // Load defaults into form.
-$('input:radio[value=' + defaults.method + ']').prop('checked', true);
-$el.Len.val(validatePasswordLength(defaults.length));
-$el.Secret.val(defaults.secret).trigger('change');
-$el.RemoveSubdomains.prop('checked', defaults.removeSubdomains).trigger('change');
+var loadIntoForm = function () {
+  var defaults = getDefaults();
+  $('input:radio[value=' + defaults.method + ']').prop('checked', true);
+  $el.Len.val(validatePasswordLength(defaults.length));
+  $el.Secret.val(defaults.secret).trigger('change');
+  $el.Letters.prop('checked', defaults.charset[0]);
+  $el.Caps.prop('checked', defaults.charset[1]);
+  $el.Numbers.prop('checked', defaults.charset[2]);
+  $el.Spec.prop('checked', defaults.charset[3]);
+  $el.RemoveSubdomains.prop('checked', defaults.removeSubdomains).trigger('change');
+};
+var defaults = getDefaults();
 $el.Body.toggleClass('Advanced', defaults.advanced);
+loadIntoForm();
 
 // Perform localization, if requested.
 if (language && localizations.hasOwnProperty(language)) {
@@ -391,6 +414,7 @@ $('#Up, #Down').on('click', adjustPasswordLength);
 // Bind to form events.
 $el.RemoveSubdomains.on('change', toggleSubdomainIndicator);
 $el.Inputs.on('keydown change', clearGeneratedPassword);
+$el.Domain.on('change', loadIntoForm);
 $('#Passwd, #Secret, #MethodField').on('keyup change', generateIdenticon);
 
 // Bind to hotkeys.
