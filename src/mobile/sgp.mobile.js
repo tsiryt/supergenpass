@@ -74,7 +74,7 @@ var selectors =
 // Retrieve defaults from local storage.
 
 var getDefaults = function(){
-  var localStorage = storage.local.getItem(getDomain(true))||storage.local.getItem(getDomain(false))||storage.local.getItem('default');
+  var localStorage = storage.local.getItem(getDomainTrue(false))||storage.local.getItem(getDomainTrue(true))||storage.local.getItem('default');
   localStorage? localStorage = localStorage.split(','):null;
   return defaults ={
     length: localStorage ?localStorage[0] : 10,
@@ -208,6 +208,14 @@ var getDomain = function (removeSubdomains) {
   if (domain) {
     domain = getHostname(domain, {removeSubdomains: removeSubdomains});
     $el.Domain.val(domain);
+  }
+  return domain;
+};
+
+var getDomainTrue = function (removeSubdomains) {
+  var domain = $el.Domain.val().replace(/ /g, '');
+  if (domain) {
+    domain = getHostname(domain, {removeSubdomains: removeSubdomains});
   }
   return domain;
 };
