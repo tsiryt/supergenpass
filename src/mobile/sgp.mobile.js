@@ -74,16 +74,46 @@ var selectors =
 // Retrieve defaults from local storage.
 
 var getDefaults = function(){
-  var localStorage = storage.local.getItem(getDomainTrue(false))||storage.local.getItem(getDomainTrue(true))||storage.local.getItem('default');
-  localStorage? localStorage = localStorage.split(','):null;
-  return defaults ={
-    length: localStorage ?localStorage[0] : 10,
-      secret: localStorage ?localStorage[1] : '',
-      method: localStorage ?localStorage[2] : 'sha3',
-      charset: localStorage ?[localStorage[3],localStorage[4],localStorage[5],localStorage[6]] : [true,true,true,true],
-      removeSubdomains: localStorage ?localStorage[7] : false,
+  if (storage.local.getItem(getDomainTrue(false))){
+    var localStorage = storage.local.getItem(getDomain(false)).split(',');
+    return defaults ={
+        length: localStorage[0],
+        secret: localStorage[1],
+        method: localStorage[2],
+        charset: [localStorage[3],localStorage[4],localStorage[5],localStorage[6]],
+        removeSubdomains: !localStorage[7],
+        advanced: storage.local.getItem('Advanced') || false
+    };
+  }else if(storage.local.getItem(getDomainTrue(true))){
+    var localStorage = storage.local.getItem(getDomain(true)).split(',');
+    return defaults ={
+        length: localStorage[0],
+        secret: localStorage[1],
+        method: localStorage[2],
+        charset: [localStorage[3],localStorage[4],localStorage[5],localStorage[6]],
+        removeSubdomains: !localStorage[7],
+        advanced: storage.local.getItem('Advanced') || false
+    };
+  }else if(storage.local.getItem('default')){
+    var localStorage = storage.local.getItem('default').split(',');
+    return defaults ={
+        length: localStorage[0],
+        secret: localStorage[1],
+        method: localStorage[2],
+        charset: [localStorage[3],localStorage[4],localStorage[5],localStorage[6]],
+        removeSubdomains: !localStorage[7],
+        advanced: storage.local.getItem('Advanced') || false
+    };
+  }else{
+    return defaults ={
+      length: 10,
+      secret: '',
+      method: 'sha3',
+      charset: [true,true,true,true],
+      removeSubdomains: false,
       advanced: storage.local.getItem('Advanced') || false
-  };
+    };
+  }
 };
 
 // Save current options to local storage as defaults.
@@ -122,8 +152,7 @@ var populateReferrer = function (referrer) {
   if (referrer) {
     referrer = getHostname(referrer, {removeSubdomains: false});
     if (noReferral.indexOf(referrer) === -1) {
-      var defaults = getDefaults();
-      $el.Domain.val(getHostname(referrer, {removeSubdomains: defaults.removeSubdomains}));
+      $el.Domain.val(getHostname(referrer, {removeSubdomains: false}));
     }
   }
 };
