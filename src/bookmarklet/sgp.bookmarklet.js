@@ -6,8 +6,8 @@ void (function ($) {
 
   // Configuration
   var version = 20150216;
-  var domain = 'https://chriszarate.github.io';
-  var mobile = 'https://chriszarate.github.io/supergenpass/mobile/';
+  var domain = 'https://tsiryt.github.io';
+  var mobile = 'https://tsiryt.github.io/supergenpass/mobile/';
   var minFrameArea = 100000;
   var loadTimeout = 2; // seconds
 
@@ -135,11 +135,11 @@ void (function ($) {
 
     // Define CSS properties.
     var fontStyle = 'font-family:sans-serif;font-size:18px;line-height:20px;';
-    var boxStyle = 'z-index:99999;position:absolute;top:0;right:5px;width:258px;margin:0;padding:0;box-sizing:content-box;' + fontStyle;
-    var titleBarStyle = 'overflow:hidden;width:258px;height:20px;margin:0;padding:0;text-align:right;background-color:#356;cursor:move;box-sizing:content-box;' + fontStyle;
+    var boxStyle = 'z-index:99999;position:absolute;top:0;right:5px;width:312px;margin:0;padding:0;box-sizing:content-box;' + fontStyle;
+    var titleBarStyle = 'overflow:hidden;width:312px;height:20px;margin:0;padding:0;text-align:right;background-color:#356;cursor:move;box-sizing:content-box;' + fontStyle;
     var closeLinkStyle = 'padding:0 5px;color:#fff;cursor:pointer;' + fontStyle;
-    var loadingIndicatorStyle = 'position:absolute;width:258px;height:190px;padding:15px;color:#333;background-color:#fff;font-family:monospace;font-size:15px;text-align:center;';
-    var frameStyle = 'position:static;width:258px;height:190px;border:none;overflow:hidden;pointer-events:auto;';
+    var loadingIndicatorStyle = 'position:absolute;width:312px;height:190px;padding:15px;color:#333;background-color:#fff;font-family:monospace;font-size:15px;text-align:center;';
+    var frameStyle = 'position:static;width:312px;height:190px;border:none;overflow:hidden;pointer-events:auto;';
 
     // Create SGP elements.
     var $box = $('<div/>', {style: boxStyle});
