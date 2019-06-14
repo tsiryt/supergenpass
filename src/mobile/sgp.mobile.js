@@ -356,9 +356,9 @@ var loadIntoForm = function () {
   $el.Caps.prop('checked', defaults.charset[1]);
   $el.Numbers.prop('checked', defaults.charset[2]);
   $el.Spec.prop('checked', defaults.charset[3]);
-  $el.RemoveSubdomains.prop('checked', defaults.removeSubdomains);
 };
 var defaults = getDefaults();
+$el.RemoveSubdomains.prop('checked', defaults.removeSubdomains).trigger('change');  
 $el.Body.toggleClass('Advanced', defaults.advanced);
 loadIntoForm();
 
