@@ -4,8 +4,8 @@
 
 var $ = require('jquery');
 var sgp = require('supergenpass-lib');
-var md5 = require('crypto-js/md5');
-var sha512 = require('crypto-js/sha512');
+var ripemd160 = require('crypto-js/ripemd160');
+var sha3 = require('crypto-js/sha3');
 var identicon = require('./lib/identicon5');
 var shortcut = require('./lib/shortcut');
 var storage = require('./lib/localstorage-polyfill');
@@ -61,25 +61,41 @@ var selectors =
     'Options',
     'SaveDefaults',
     'Update',
-    'Bookmarklet'
+    'Bookmarklet',
+    'Letters',
+    'Caps',
+    'Numbers',
+    'Spec'
   ];
 
 // Retrieve defaults from local storage.
+var localStorage = storage.local.getItem(getDomain(true))||storage.local.getItem(getDomain(false))||storage.local.getItem('default');
+
 var defaults = {
-  length: storage.local.getItem('Len') || 10,
-  secret: storage.local.getItem('Salt') || '',
-  method: storage.local.getItem('Method') || 'md5',
-  removeSubdomains: !storage.local.getItem('DisableTLD') || false,
+  length: localStorage ?localStorage.len : 10,
+  secret: localStorage ?localStorage.secret : '',
+  method: localStorage ?localStorage.method : 'sha3',
+  charset: localStorage ?localStorage.charset : [true,true,true,true],
+  removeSubdomains: localStorage ?localStorage.disableTLD : false,
   advanced: storage.local.getItem('Advanced') || false
 };
 
 // Save current options to local storage as defaults.
 var saveCurrentOptionsAsDefaults = function (e) {
   var input = getCurrentFormInput();
-  storage.local.setItem('Len', input.options.length);
-  storage.local.setItem('Salt', input.options.secret);
-  storage.local.setItem('Method', input.options.method);
-  storage.local.setItem('DisableTLD', !input.options.removeSubdomains || '');
+  if (input.domain){
+    storage.local.setItem(input.domain, {'len': input.options.length,
+                                          'secret': input.options.secret,
+                                          'method': input.options.method,
+                                          'charset': input.options.charset,
+                                          'disableTLD': !input.options.removeSubdomains || ''});
+  }else{
+    storage.local.setItem('default', {'len': input.options.length,
+                                        'secret': input.options.secret,
+                                        'method': input.options.method,
+                                        'charset': input.options.charset,
+                                        'disableTLD': !input.options.removeSubdomains || ''});
+  }
   showButtonSuccess(e);
 };
 
@@ -161,6 +177,10 @@ var getCurrentFormInput = function () {
     domain: getDomain(removeSubdomains),
     options: {
       secret: $el.Secret.val(),
+      charset: [$el.Letters.is(':checked'),
+                $el.Caps.is(':checked'),
+                $el.Numbers.is(':checked'),
+                $el.Spec.is(':checked'),],
       length: getPasswordLength(),
       method: getHashMethod(),
       removeSubdomains: removeSubdomains
@@ -191,12 +211,12 @@ var validatePasswordLength = function (passwordLength) {
 };
 
 var getHashMethod = function () {
-  return $('input:radio[name=Method]:checked').val() || 'md5';
+  return $('input:radio[name=Method]:checked').val() || 'sha3';
 };
 
 // Generate hexadecimal hash for identicons.
 var generateIdenticonHash = function (seed, hashMethod) {
-  var hashFunction = (hashMethod === 'sha512') ? sha512 : md5;
+  var hashFunction = (hashMethod === 'ripemd160') ? ripemd160 : sha3;
   for (var i = 0; i <= 4; i = i + 1) {
     seed = hashFunction(seed).toString();
   }

@@ -141,7 +141,7 @@ label {
 
 .Missing label { color: #d66; }
 .Missing input::-webkit-input-placeholder { color: #d66; }
-.Missing input:::-moz-placeholder { color: #d66; }
+.Missing input::-moz-placeholder { color: #d66; }
 .Missing input::-moz-placeholder { color: #d66; }
 .Missing input:-ms-input-placeholder { color: #d66; }
 .Missing input { border-color: #d66; }
@@ -209,6 +209,12 @@ label {
    border-radius: 0 4px 4px 0;
 }
 
+/*Charset checkboxes*/
+
+#Charset li {
+   list-style: none;
+}
+
 
 /* Method toggle */
 
@@ -222,7 +228,7 @@ input[type="radio"] {
 
 input[type="radio"] + label {
    float: right;
-   width: 48px;
+   width: 82px;
    height: 16px;
    margin: 0;
    padding: 6px 0;
