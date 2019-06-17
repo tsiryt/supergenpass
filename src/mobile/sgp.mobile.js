@@ -366,6 +366,7 @@ var toggleAdvancedOptions = function () {
 
 var toggleSubdomainIndicator = function () {
   var input = getCurrentFormInput();
+  $el.Domain.trigger('change');
   $el.DomainField.toggleClass('Advanced', !input.options.removeSubdomains);
 };
 
