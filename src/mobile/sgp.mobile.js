@@ -396,6 +396,10 @@ var loadIntoForm = function () {
   $el.Numbers.prop('checked', defaults.charset[2]);
   $el.Spec.prop('checked', defaults.charset[3]);
 };
+
+// Populate domain with referrer, if available.
+populateReferrer(document.referrer);
+
 var defaults = getDefaults(false);
 $el.RemoveSubdomains.prop('checked', defaults.removeSubdomains).trigger('change');  
 $el.Body.toggleClass('Advanced', defaults.advanced);
@@ -459,9 +463,6 @@ $('#Passwd, #Secret, #MethodField').on('keyup change', generateIdenticon);
 // Bind to hotkeys.
 shortcut.add('Ctrl+O', toggleAdvancedOptions);
 shortcut.add('Ctrl+G', generatePassword);
-
-// Populate domain with referrer, if available.
-populateReferrer(document.referrer);
 
 // Set focus on password field.
 $el.Passwd.trigger('focus').trigger('change');
