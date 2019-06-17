@@ -73,9 +73,9 @@ var selectors =
 
 // Retrieve defaults from local storage.
 
-var getDefaults = function(){
+var getDefaults = function(refresh){
   if (storage.local.getItem(getDomainTrue(false))){
-    var localStorage = storage.local.getItem(getDomain(false)).split(',');
+    var localStorage = refresh? storage.local.getItem(getDomainTrue(false)).split(',') :storage.local.getItem(getDomain(false)).split(',');
     return defaults ={
         length: localStorage[0],
         secret: localStorage[1],
@@ -85,7 +85,7 @@ var getDefaults = function(){
         advanced: storage.local.getItem('Advanced') || false
     };
   }else if(storage.local.getItem(getDomainTrue(true))){
-    var localStorage = storage.local.getItem(getDomain(true)).split(',');
+    var localStorage = refresh? storage.local.getItem(getDomainTrue(true)).split(',') :storage.local.getItem(getDomain(true)).split(',');
     return defaults ={
         length: localStorage[0],
         secret: localStorage[1],
@@ -96,6 +96,7 @@ var getDefaults = function(){
     };
   }else if(storage.local.getItem('default')){
     var localStorage = storage.local.getItem('default').split(',');
+    if(!refresh&&!localStorage){getDomain(true);}
     return defaults ={
         length: localStorage[0],
         secret: localStorage[1],
@@ -185,7 +186,7 @@ var listenForBookmarklet = function (event) {
     });
 
     // Populate domain field and call back with the browser height.
-    var defaults = getDefaults();
+    var defaults = getDefaults(false);
     $el.Domain.val(getHostname(messageOrigin, {removeSubdomains: defaults.removeSubdomains})).trigger('change');
     sendDocumentHeight();
 
@@ -365,6 +366,7 @@ var toggleAdvancedOptions = function () {
 
 var toggleSubdomainIndicator = function () {
   var input = getCurrentFormInput();
+  $el.Domain.trigger('change');
   $el.DomainField.toggleClass('Advanced', !input.options.removeSubdomains);
 };
 
@@ -385,7 +387,7 @@ $.each(selectors, function (i, val) {
 
 // Load defaults into form.
 var loadIntoForm = function () {
-  var defaults = getDefaults();
+  var defaults = getDefaults(true);
   $('input:radio[value=' + defaults.method + ']').prop('checked', true);
   $el.Len.val(validatePasswordLength(defaults.length));
   $el.Secret.val(defaults.secret).trigger('change');
@@ -394,7 +396,7 @@ var loadIntoForm = function () {
   $el.Numbers.prop('checked', defaults.charset[2]);
   $el.Spec.prop('checked', defaults.charset[3]);
 };
-var defaults = getDefaults();
+var defaults = getDefaults(false);
 $el.RemoveSubdomains.prop('checked', defaults.removeSubdomains).trigger('change');  
 $el.Body.toggleClass('Advanced', defaults.advanced);
 loadIntoForm();
