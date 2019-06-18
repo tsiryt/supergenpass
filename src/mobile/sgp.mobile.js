@@ -22,6 +22,7 @@ var latestVersion = 20150216;
 
 // Hostnames that should not be populated into the domain field on referral.
 var noReferral = [
+  'tsiryt.github.io',
   'chriszarate.github.io',
   'www.google.com',
   'www.bing.com',
@@ -76,7 +77,7 @@ var selectors =
 var getDefaults = function(refresh){
   if (storage.local.getItem(getDomainTrue(false))){
     var localStorage = refresh? storage.local.getItem(getDomainTrue(false)).split(',') :storage.local.getItem(getDomain(false)).split(',');
-    return defaults ={
+    return {
         length: localStorage[0],
         secret: localStorage[1],
         method: localStorage[2],
@@ -86,7 +87,7 @@ var getDefaults = function(refresh){
     };
   }else if(storage.local.getItem(getDomainTrue(true))){
     var localStorage = refresh? storage.local.getItem(getDomainTrue(true)).split(',') :storage.local.getItem(getDomain(true)).split(',');
-    return defaults ={
+    return {
         length: localStorage[0],
         secret: localStorage[1],
         method: localStorage[2],
@@ -97,7 +98,7 @@ var getDefaults = function(refresh){
   }else if(storage.local.getItem('default')){
     var localStorage = storage.local.getItem('default').split(',');
     if(!refresh&&!localStorage){getDomain(true);}
-    return defaults ={
+    return {
         length: localStorage[0],
         secret: localStorage[1],
         method: localStorage[2],
@@ -106,7 +107,7 @@ var getDefaults = function(refresh){
         advanced: storage.local.getItem('Advanced') || false
     };
   }else{
-    return defaults ={
+    return {
       length: 10,
       secret: '',
       method: 'sha3',
